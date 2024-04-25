@@ -1,4 +1,5 @@
 using System;
+using Unity.Burst.CompilerServices;
 using UnityEngine;
 
 [RequireComponent(typeof(LineRenderer))]
@@ -22,21 +23,6 @@ public class LineDrawer : MonoBehaviour
 
     private void Update()
     {
-        if (Input.GetMouseButton(LeftMouseButton) || Input.GetMouseButtonDown(LeftMouseButton))
-        {
-            return;
-        }
-
-        if (Physics.Raycast(_mainCamera.ScreenPointToRay(Input.mousePosition), out RaycastHit hit))
-        {
-            bool isPositionChanged = _lastHitPosition != hit.point;
-
-            if (isPositionChanged)
-            {
-                AddPoint(hit.point);
-            }
-        }
-
         if (Input.GetMouseButtonDown(LeftMouseButton))
         {
             StartLine();
@@ -45,6 +31,19 @@ public class LineDrawer : MonoBehaviour
         {
             AddPoint(_lastHitPosition);
             FinishLine();
+        }
+
+        if (Input.GetMouseButton(LeftMouseButton) || Input.GetMouseButtonDown(LeftMouseButton))
+        {
+            if (Physics.Raycast(_mainCamera.ScreenPointToRay(Input.mousePosition), out RaycastHit hit))
+            {
+                bool isPositionChanged = _lastHitPosition != hit.point;
+
+                if (isPositionChanged)
+                {
+                    AddPoint(hit.point);
+                }
+            }
         }
     }
 
